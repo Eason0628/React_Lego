@@ -1,26 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+// function App() {
+//   return (
+//     <div className="App">
+//     </div>
+//   );
+// }
+// export default App;
 
-function App() {
+import { useEffect, useRef } from 'react';
+import './styles/app.css';
+
+const App = () => {
+  const ref = useRef<HTMLDivElement>(null!);
+
+  // 页面加载完成后，guide-page添加opacity 动画 0 -> 1
+  useEffect(() => {
+    ref.current.style.opacity = '1';
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div ref={ref} className="page guide-page">
+      <img
+        alt="欢乐购"
+        className="main-pic"
+        src={require('./images/halg_logo_icon_@2x.png')}
+      />
+      <p className='title'>欢乐购</p>
+      <img
+        alt="欢乐购"
+        className="sub-pic"
+        src={require('./images/slogn_word_icon_@2x.png')}
+      />
+      <div className="iconfont arrow-icon">&#xe60c;</div>
     </div>
-  );
+  )
 }
 
 export default App;
