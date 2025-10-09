@@ -1,29 +1,23 @@
-import './style.scss';
 import { useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
 import useRequest from '../../utils/useRequest';
 import Modal, { ModalInterfaceType } from '../../components/Modal';
 
 // 返回内容类型
 type ResponseType = {
-  success: boolean;
-  data: boolean;
+  sussess: boolean;
+  data: {
+    token: string;
+  }
 }
 
-const Register = () => {
+const Login = () => {
   const modalRef = useRef<ModalInterfaceType>(null!);
-  const [ userName, setUserName ] = useState('');
   const [ phoneNumber, setPhoneNumber ] = useState('');
   const [ password, setPassword ] = useState('');
-  const [ checkPassword, setCheckPassword ] = useState('');
   
   const { request } = useRequest<ResponseType>();
-  // 点击注册按钮时的操作
+  // 点击登录按钮时的操作
   function handleSubmitBtnClick() {
-    if(!userName) {
-      modalRef.current.showMessage('用户不得为空！');
-      return;
-    }
     if(!phoneNumber) {
       modalRef.current.showMessage('手机号码不得为空！');
       return;
@@ -32,19 +26,10 @@ const Register = () => {
       modalRef.current.showMessage('密码不得为空！');
       return;
     }
-    if(password.length < 6) {
-      modalRef.current.showMessage('密码至少为六位！');
-      return;
-    }
-    if(password !== checkPassword) {
-      modalRef.current.showMessage('两次输入密码不一致！');
-      return;
-    }
     request({
-      url: '/register.json',
+      url: '/login.json',
       method: 'POST',
       data: {
-        user: userName,
         phone: phoneNumber,
         password: password,
       }
@@ -56,23 +41,8 @@ const Register = () => {
   }
 
   return (
-    <div className="page register-page">
-      <div className="tab">
-        <div className='tab-item tab-item-left'>
-          <Link to='/login'>登陆</Link>
-        </div>
-        <div className='tab-item tab-item-right'>注册</div>
-      </div>
+    <>
       <div className="form">
-        <div className='form-item'>
-          <div className='form-item-title'>用户名</div>
-          <input
-            value={userName}
-            className='form-item-content'
-            placeholder='请输入用户名'
-            onChange={(e) => { setUserName(e.target.value) }}
-          />
-        </div>
         <div className='form-item'>
           <div className='form-item-title'>手机号</div>
           <input
@@ -92,23 +62,16 @@ const Register = () => {
             onChange={(e) => { setPassword(e.target.value) }}
           />
         </div>
-        <div className='form-item'>
-          <div className='form-item-title'>确认密码</div>
-          <input
-            value={checkPassword}
-            type="password"
-            className='form-item-content'
-            placeholder='请输入确认密码'
-            onChange={(e) => { setCheckPassword(e.target.value) }}
-          />
-        </div>
       </div>
       <div className="submit" onClick={handleSubmitBtnClick}>
-        注册
+        登陆
       </div>
+      <p className="notice">
+        *登录即表示您赞同使用条款及隐私政策
+      </p>
       <Modal ref={modalRef} />
-    </div>
+    </>
   )
 }
 
-export default Register;
+export default Login;

@@ -12,7 +12,7 @@ const Guide = () => {
   // 处理页面跳转相关的逻辑
   const navigate = useNavigate();
   function handleIconClick() {
-    navigate('/login');
+    navigate('/account/login');
   };
 
   return (
