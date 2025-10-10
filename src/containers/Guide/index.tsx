@@ -12,7 +12,11 @@ const Guide = () => {
   // 处理页面跳转相关的逻辑
   const navigate = useNavigate();
   function handleIconClick() {
-    navigate('/account/login');
+    if(localStorage.getItem('token')) {
+      navigate('/home');
+    }else {
+      navigate('/account/login');
+    }
   };
 
   return (

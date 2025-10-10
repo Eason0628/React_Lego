@@ -8,6 +8,7 @@ import Guide from './containers/Guide';
 import Account from './containers/Account';
 import Login from './containers/Account/Login';
 import Register from './containers/Account/Register';
+import Home from './containers/Home';
 
 const router = createHashRouter([{
   path: '/',
@@ -17,11 +18,14 @@ const router = createHashRouter([{
   element: <Account />,
   children: [{
     path: '/account/login',
-    element: <Login/>
+    element: <Login />
   }, {
     path: '/account/register',
-    element: <Register/>
+    element: <Register />
   }]
+}, {
+  path: '/home',
+  element: <Home />
 }])
 
 const App = () => {
