@@ -1,7 +1,7 @@
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useRequest from '../../utils/useRequest';
-import Modal, { ModalInterfaceType } from '../../components/Modal';
+import useRequest from '../../hooks/useRequest';
+import { message } from '../../utils/message';
 
 // 返回内容类型
 type ResponseType = {
@@ -12,23 +12,21 @@ type ResponseType = {
 }
 
 const Login = () => {
-  const modalRef = useRef<ModalInterfaceType>(null!);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [password, setPassword] = useState('');
+  const [ phoneNumber, setPhoneNumber ] = useState('');
+  const [ password, setPassword ] = useState('');
   const navigate = useNavigate();
-
+  
   const { request } = useRequest<ResponseType>();
   // 点击登录按钮时的操作
   function handleSubmitBtnClick() {
-    if (!phoneNumber) {
-      modalRef.current.showMessage('手机号码不得为空！');
+    if(!phoneNumber) {
+      message('手机号码不得为空！');
       return;
     }
-    if (!password) {
-      modalRef.current.showMessage('密码不得为空！');
+    if(!password) {
+      message('密码不得为空！');
       return;
     }
-
 
     const a1 = 'APP-UvygAWn-4519950447516193282-2';
     const a2 = 'KEY035UvyhbsvXDuoopaM2b3H4jRRnjnBpt53gOXsdbj3';
@@ -45,14 +43,13 @@ const Login = () => {
 
       }
     }).then((data) => {
-      debugger;
       const { data: { token } } = data;
-      if (token) {
+      if(token) {
         localStorage.setItem('token', token);
         navigate('/home');
       }
     }).catch((e: any) => {
-      modalRef.current?.showMessage(e?.message || '未知异常');
+      message(e?.message);
     });
   }
 
@@ -85,7 +82,6 @@ const Login = () => {
       <p className="notice">
         *登录即表示您赞同使用条款及隐私政策
       </p>
-      <Modal ref={modalRef} />
     </>
   )
 }

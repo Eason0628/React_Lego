@@ -1,10 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useCallback } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-function useRequest<T>(options: AxiosRequestConfig = {
+// 默认请求参数
+const defaultRequestConfig = {
   url: '/', method: 'GET', data: {}, params: {}
-}) {
+}
+
+function useRequest<T>(options: AxiosRequestConfig = defaultRequestConfig) {
   const navigate = useNavigate();
   const [ data, setData ] = useState<T | null>(null);
   const [ error, setError ] = useState('');
@@ -15,7 +18,7 @@ function useRequest<T>(options: AxiosRequestConfig = {
     controllerRef.current.abort();
   }
 
-  const request = (requestOptions?: AxiosRequestConfig) => {
+  const request = useCallback((requestOptions?: AxiosRequestConfig) => {
     // 清空之前的请求状态和数据
     setData(null);
     setError('');
@@ -48,7 +51,7 @@ function useRequest<T>(options: AxiosRequestConfig = {
     }).finally(() => {
       setLoaded(true);
     });
-  }
+  }, [navigate, options])
 
   return { data, error, loaded, request, cancel }
 }

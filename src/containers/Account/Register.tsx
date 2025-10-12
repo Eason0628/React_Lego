@@ -1,6 +1,7 @@
-import { useRef, useState } from 'react';
-import useRequest from '../../utils/useRequest';
-import Modal, { ModalInterfaceType } from '../../components/Modal';
+import { useState } from 'react';
+import useRequest from '../../hooks/useRequest';
+import { message } from '../../utils/message';
+import { useNavigate } from 'react-router-dom';
 
 // 返回内容类型
 type ResponseType = {
@@ -9,7 +10,8 @@ type ResponseType = {
 }
 
 const Register = () => {
-  const modalRef = useRef<ModalInterfaceType>(null!);
+  // 处理页面跳转相关的逻辑
+  const navigate = useNavigate();
   const [ userName, setUserName ] = useState('');
   const [ phoneNumber, setPhoneNumber ] = useState('');
   const [ password, setPassword ] = useState('');
@@ -19,23 +21,23 @@ const Register = () => {
   // 点击注册按钮时的操作
   function handleSubmitBtnClick() {
     if(!userName) {
-      modalRef.current.showMessage('用户不得为空！');
+      message('用户不得为空！');
       return;
     }
     if(!phoneNumber) {
-      modalRef.current.showMessage('手机号码不得为空！');
+      message('手机号码不得为空！');
       return;
     }
     if(!password) {
-      modalRef.current.showMessage('密码不得为空！');
+      message('密码不得为空！');
       return;
     }
     if(password.length < 6) {
-      modalRef.current.showMessage('密码至少为六位！');
+      message('密码至少为六位！');
       return;
     }
     if(password !== checkPassword) {
-      modalRef.current.showMessage('两次输入密码不一致！');
+      message('两次输入密码不一致！');
       return;
     }
     request({
@@ -47,9 +49,12 @@ const Register = () => {
         password: password,
       }
     }).then((data) => {
-      data && console.log(data);
+      console.log(data);
+      if(data?.success) {
+        navigate('/account/login')
+      }
     }).catch((e: any) => {
-      modalRef.current?.showMessage(e?.message || '未知异常');
+      message(e?.message);
     });
   }
 
@@ -98,7 +103,6 @@ const Register = () => {
       <div className="submit" onClick={handleSubmitBtnClick}>
         注册
       </div>
-      <Modal ref={modalRef} />
     </>
   )
 }

@@ -2,25 +2,43 @@ import 'swiper/css';
 import './style.scss';
 import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
+import useRequest from '../../hooks/useRequest';
+import { message } from '../../utils/message';
 
 const localLocation = localStorage.getItem('location');
-const locationHistory = localLocation ? JSON.parse(localLocation): null;
+const locationHistory = localLocation ? JSON.parse(localLocation) : null;
 
 // 默认请求数据
+const a1 = 'APP-UvygAWn-4519950447516193282-2';
+const a2 = 'KEY035UvyhbsvXDuoopaM2b3H4jRRnjnBpt53gOXsdbj3';
+const t1 = new Date().getTime();
 const defaultRequestData = {
-  url: '/home.json',
+  url: 'https://open.datadex.com.cn/dexserver/dex-api/v1/home',
   method: 'POST',
   data: {
+    a1: a1,
+    a2: a2,
+    t1: t1,
     latitude: locationHistory ? locationHistory.latitude : 37.7304167,
-    longitude: locationHistory ? locationHistory.longitude: -122.384425,
+    longitude: locationHistory ? locationHistory.longitude : -122.384425,
   }
 }
 
 const Home = () => {
-  const [ requestData, setRequestData ] = useState(defaultRequestData);
+  const [requestData, setRequestData] = useState(defaultRequestData);
+  const { request } = useRequest(requestData);
 
   useEffect(() => {
-    if(navigator.geolocation && !locationHistory) {
+    request().then((data) => {
+      console.log(data);
+    }).catch(e => {
+      message(e?.message);
+    })
+  }, [requestData, request])
+
+  // 获取经纬度信息
+  useEffect(() => {
+    if (navigator.geolocation && !locationHistory) {
       console.log('get location');
       navigator.geolocation.getCurrentPosition((position) => {
         const { coords } = position;
@@ -30,15 +48,15 @@ const Home = () => {
         }));
         setRequestData({
           ...defaultRequestData,
-          data: { latitude, longitude } 
+          data: { a1, a2, t1, latitude, longitude }
         });
       }, (error) => {
         console.log(error);
-      }, {timeout: 500})
+      }, { timeout: 500 })
     }
   }, []);
 
-  const [ page, setPage ] = useState(1);
+  const [page, setPage] = useState(1);
   return (
     <div className='page home-page'>
       <div className='banner'>
@@ -60,12 +78,12 @@ const Home = () => {
           >
             <SwiperSlide>
               <div className='swiper-item'>
-                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图'/>
+                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图' />
               </div>
             </SwiperSlide>
             <SwiperSlide>
               <div className='swiper-item'>
-                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图'/>
+                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图' />
               </div>
             </SwiperSlide>
           </Swiper>
