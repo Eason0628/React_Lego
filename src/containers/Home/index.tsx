@@ -1,10 +1,44 @@
 import 'swiper/css';
 import './style.scss';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 
+const localLocation = localStorage.getItem('location');
+const locationHistory = localLocation ? JSON.parse(localLocation): null;
+
+// 默认请求数据
+const defaultRequestData = {
+  url: '/home.json',
+  method: 'POST',
+  data: {
+    latitude: locationHistory ? locationHistory.latitude : 37.7304167,
+    longitude: locationHistory ? locationHistory.longitude: -122.384425,
+  }
+}
+
 const Home = () => {
-  const [page, setPage] = useState(1);
+  const [ requestData, setRequestData ] = useState(defaultRequestData);
+
+  useEffect(() => {
+    if(navigator.geolocation && !locationHistory) {
+      console.log('get location');
+      navigator.geolocation.getCurrentPosition((position) => {
+        const { coords } = position;
+        const { latitude, longitude } = coords;
+        localStorage.setItem('location', JSON.stringify({
+          latitude, longitude
+        }));
+        setRequestData({
+          ...defaultRequestData,
+          data: { latitude, longitude } 
+        });
+      }, (error) => {
+        console.log(error);
+      }, {timeout: 500})
+    }
+  }, []);
+
+  const [ page, setPage ] = useState(1);
   return (
     <div className='page home-page'>
       <div className='banner'>
@@ -26,12 +60,12 @@ const Home = () => {
           >
             <SwiperSlide>
               <div className='swiper-item'>
-                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图' />
+                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图'/>
               </div>
             </SwiperSlide>
             <SwiperSlide>
               <div className='swiper-item'>
-                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图' />
+                <img className='swiper-item-img' src='http://statics.dell-lee.com/shopping/banner.png' alt='轮播图'/>
               </div>
             </SwiperSlide>
           </Swiper>
