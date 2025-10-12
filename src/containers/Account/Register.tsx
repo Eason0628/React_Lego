@@ -1,13 +1,8 @@
+import type { RegisterResponseType } from './types';
 import { useState } from 'react';
 import useRequest from '../../hooks/useRequest';
 import { message } from '../../utils/message';
 import { useNavigate } from 'react-router-dom';
-
-// 返回内容类型
-type ResponseType = {
-  success: boolean;
-  data: boolean;
-}
 
 const Register = () => {
   // 处理页面跳转相关的逻辑
@@ -17,7 +12,7 @@ const Register = () => {
   const [ password, setPassword ] = useState('');
   const [ checkPassword, setCheckPassword ] = useState('');
   
-  const { request } = useRequest<ResponseType>();
+  const { request } = useRequest<RegisterResponseType>({manual: true});
   // 点击注册按钮时的操作
   function handleSubmitBtnClick() {
     if(!userName) {

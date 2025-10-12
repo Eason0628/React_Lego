@@ -1,29 +1,22 @@
+import type { LoginResponseType } from './types';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useRequest from '../../hooks/useRequest';
 import { message } from '../../utils/message';
 
-// 返回内容类型
-type ResponseType = {
-  sussess: boolean;
-  data: {
-    token: string;
-  }
-}
-
 const Login = () => {
-  const [ phoneNumber, setPhoneNumber ] = useState('');
-  const [ password, setPassword ] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [password, setPassword] = useState('');
   const navigate = useNavigate();
-  
-  const { request } = useRequest<ResponseType>();
+
+  const { request } = useRequest<LoginResponseType>({ manual: true });
   // 点击登录按钮时的操作
   function handleSubmitBtnClick() {
-    if(!phoneNumber) {
+    if (!phoneNumber) {
       message('手机号码不得为空！');
       return;
     }
-    if(!password) {
+    if (!password) {
       message('密码不得为空！');
       return;
     }
@@ -44,7 +37,7 @@ const Login = () => {
       }
     }).then((data) => {
       const { data: { token } } = data;
-      if(token) {
+      if (token) {
         localStorage.setItem('token', token);
         navigate('/home');
       }

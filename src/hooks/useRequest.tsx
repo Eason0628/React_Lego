@@ -1,13 +1,16 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import axios, { AxiosRequestConfig } from 'axios';
 import { useNavigate } from 'react-router-dom';
+import { message } from '../utils/message';
 
 // 默认请求参数
 const defaultRequestConfig = {
   url: '/', method: 'GET', data: {}, params: {}
 }
 
-function useRequest<T>(options: AxiosRequestConfig = defaultRequestConfig) {
+function useRequest<T>(
+  options: AxiosRequestConfig & {manual?: boolean} = defaultRequestConfig
+) {
   const navigate = useNavigate();
   const [ data, setData ] = useState<T | null>(null);
   const [ error, setError ] = useState('');
@@ -18,7 +21,7 @@ function useRequest<T>(options: AxiosRequestConfig = defaultRequestConfig) {
     controllerRef.current.abort();
   }
 
-  const request = useCallback((requestOptions?: AxiosRequestConfig) => {
+  const request = useCallback((requestOptions: AxiosRequestConfig) => {
     // 清空之前的请求状态和数据
     setData(null);
     setError('');
@@ -32,11 +35,11 @@ function useRequest<T>(options: AxiosRequestConfig = defaultRequestConfig) {
 
     // 发送请求
     return axios.request<T>({
-      url: requestOptions?.url || options.url,
-      method: requestOptions?.method || options.method,
+      url: requestOptions.url,
+      method: requestOptions.method,
       signal: controllerRef.current.signal,
-      data: requestOptions?.data || options.data,
-      params: requestOptions?.params || options.params,
+      data: requestOptions.data,
+      params: requestOptions.params,
       headers
     }).then(response => {
       setData(response.data);
@@ -51,7 +54,15 @@ function useRequest<T>(options: AxiosRequestConfig = defaultRequestConfig) {
     }).finally(() => {
       setLoaded(true);
     });
-  }, [navigate, options])
+  }, [navigate]);
+
+  useEffect(() => {
+    if(!options.manual) {
+      request(options).catch(e => {
+        message(e?.message);
+      })
+    }
+  }, [options, request]);
 
   return { data, error, loaded, request, cancel }
 }
