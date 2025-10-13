@@ -6,7 +6,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import useRequest from '../../hooks/useRequest';
 
 const localLocation = localStorage.getItem('location');
-const locationHistory = localLocation ? JSON.parse(localLocation) : null;
+const locationHistory = localLocation ? JSON.parse(localLocation): null;
 
 // 默认请求数据
 // 默认请求数据
@@ -24,13 +24,14 @@ const defaultRequestData = {
     longitude: locationHistory ? locationHistory.longitude : -122.384425,
   }
 }
+
 const Home = () => {
-  const [requestData, setRequestData] = useState(defaultRequestData);
+  const [ requestData, setRequestData ] = useState(defaultRequestData);
   const { data } = useRequest<ResponseType>(requestData);
 
   // 获取经纬度信息
   useEffect(() => {
-    if (navigator.geolocation && !locationHistory) {
+    if(navigator.geolocation && !locationHistory) {
       console.log('get location');
       navigator.geolocation.getCurrentPosition((position) => {
         const { coords } = position;
@@ -40,15 +41,15 @@ const Home = () => {
         }));
         setRequestData({
           ...defaultRequestData,
-          data: { a1, a2, t1, latitude, longitude }
+          data: { a1, a2, t1, latitude, longitude } 
         });
       }, (error) => {
         console.log(error);
-      }, { timeout: 500 })
+      }, {timeout: 500})
     }
   }, []);
 
-  const [page, setPage] = useState(1);
+  const [ page, setPage ] = useState(1);
   return (
     <div className='page home-page'>
       <div className='banner'>
@@ -73,7 +74,7 @@ const Home = () => {
                 return (
                   <SwiperSlide key={item.id}>
                     <div className='swiper-item'>
-                      <img className='swiper-item-img' src={item.url} alt='轮播图' />
+                      <img className='swiper-item-img' src={item.url} alt='轮播图'/>
                     </div>
                   </SwiperSlide>
                 )
@@ -81,6 +82,150 @@ const Home = () => {
             }
           </Swiper>
           <div className='pagination'>{page}/{data?.data.banners.length || 0}</div>
+        </div>
+      </div>
+      <div className='category'>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+        <div className='category-item'>
+          <img
+            className='category-item-img'
+            alt='新鲜蔬菜'
+            src='http://statics.dell-lee.com/shopping/category-1.png'
+          />
+          <p className='category-item-desc'>新鲜蔬菜</p>
+        </div>
+      </div>
+      <div className='card'>
+        <h3 className='card-title'>
+          <img
+            alt='新品尝鲜'
+            className='card-title-img'
+            src='http://statics.dell-lee.com/shopping/hot.png'
+          />
+          新品尝鲜
+          <div className='card-title-more'>更多<span className='iconfont'>&#xe613;</span></div>
+        </h3>
+        <div className='card-content'>
+          <div className='card-content-item'>
+            <img
+              alt=''
+              className='card-content-item-img'
+              src='http://statics.dell-lee.com/shopping/hot.png'
+            />
+            <p className='card-content-item-desc'>金锣 国产猪肉 去皮猪五花肉块 …</p>
+            <p className='card-content-item-price'>
+              <span className='card-content-item-yen'>&yen;</span>
+              66.9
+              <div className='iconfont'>&#xe7e0;</div>
+            </p>
+          </div>
+          <div className='card-content-item'>
+            <img
+              alt=''
+              className='card-content-item-img'
+              src='http://statics.dell-lee.com/shopping/hot.png'
+            />
+            <p className='card-content-item-desc'>金锣 国产猪肉 去皮猪五花肉块 …</p>
+            <p className='card-content-item-price'>
+              <span className='card-content-item-yen'>&yen;</span>
+              66.9
+              <div className='iconfont'>&#xe7e0;</div>
+            </p>
+          </div>
+          <div className='card-content-item'>
+            <img
+              alt=''
+              className='card-content-item-img'
+              src='http://statics.dell-lee.com/shopping/hot.png'
+            />
+            <p className='card-content-item-desc'>金锣 国产猪肉 去皮猪五花肉块 …</p>
+            <p className='card-content-item-price'>
+              <span className='card-content-item-yen'>&yen;</span>
+              66.9
+              <div className='iconfont'>&#xe7e0;</div>
+            </p>
+          </div>
+          <div className='card-content-item'>
+            <img
+              alt=''
+              className='card-content-item-img'
+              src='http://statics.dell-lee.com/shopping/hot.png'
+            />
+            <p className='card-content-item-desc'>金锣 国产猪肉 去皮猪五花肉块 …</p>
+            <p className='card-content-item-price'>
+              <span className='card-content-item-yen'>&yen;</span>
+              66.9
+              <div className='iconfont'>&#xe7e0;</div>
+            </p>
+          </div>
+          <div className='card-content-item'>
+            <img
+              alt=''
+              className='card-content-item-img'
+              src='http://statics.dell-lee.com/shopping/hot.png'
+            />
+            <p className='card-content-item-desc'>金锣 国产猪肉 去皮猪五花肉块 …</p>
+            <p className='card-content-item-price'>
+              <span className='card-content-item-yen'>&yen;</span>
+              66.9
+              <div className='iconfont'>&#xe7e0;</div>
+            </p>
+          </div>
         </div>
       </div>
     </div>
