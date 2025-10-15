@@ -7,9 +7,6 @@ import Banner from './components/Banner';
 import Category from './components/Category';
 import Card from './components/Card';
 
-const localLocation = localStorage.getItem('location');
-const locationHistory = localLocation ? JSON.parse(localLocation) : null;
-
 // 默认请求数据
 const a1 = 'APP-UvygAWn-4519950447516193282-2';
 const a2 = 'KEY035UvyhbsvXDuoopaM2b3H4jRRnjnBpt53gOXsdbj3';
@@ -21,12 +18,20 @@ const defaultRequestData = {
     a1: a1,
     a2: a2,
     t1: t1,
-    latitude: locationHistory ? locationHistory.latitude : 37.7304167,
-    longitude: locationHistory ? locationHistory.longitude : -122.384425,
+    latitude: 37.7304167,
+    longitude: -122.384425,
   }
 }
 
 const Home = () => {
+  const localLocation = localStorage.getItem('location');
+  const locationHistory = localLocation ? JSON.parse(localLocation) : null;
+
+  if (locationHistory) {
+    defaultRequestData.data.latitude = locationHistory.latitude;
+    defaultRequestData.data.longitude = locationHistory.longitude;
+  }
+
   const [requestData, setRequestData] = useState(defaultRequestData);
   const { data } = useRequest<ResponseType>(requestData);
 
@@ -48,7 +53,7 @@ const Home = () => {
         console.log(error);
       }, { timeout: 500 })
     }
-  }, []);
+  }, [locationHistory]);
 
   let location, banners, categories, freshes = undefined;
   const dataResult = data?.data;
