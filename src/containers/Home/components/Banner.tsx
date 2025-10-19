@@ -18,7 +18,9 @@ const Banner = (props: BannerPropsType) => {
   }
 
   function handleSearchClick() {
-    navigate('/search')
+    if(location) {
+      navigate(`/search/${location.id}`)
+    }
   }
 
   return (

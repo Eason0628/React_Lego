@@ -1,9 +1,10 @@
 import type { ResponseType } from './types';
 import './style.scss';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import useRequest from '../../hooks/useRequest';
 
+// 默认请求数据
 // 默认请求数据
 const a1 = 'APP-UvygAWn-4519950447516193282-2';
 const a2 = 'KEY035UvyhbsvXDuoopaM2b3H4jRRnjnBpt53gOXsdbj3';
@@ -14,37 +15,51 @@ const defaultRequestData = {
   data: {
     a1: a1,
     a2: a2,
-    t1: t1
+    t1: t1,
+    shopId: ''
   }
 }
-
-
 const Search = () => {
   const localSearchList = localStorage.getItem('search-list');
-  const seachListHistory: string[] = localSearchList ? JSON.parse(localSearchList): [];
+  const seachListHistory: string[] = localSearchList ? JSON.parse(localSearchList) : [];
 
-  const [ historyList, setHistoryList] = useState(seachListHistory);
-  const [ keyword, setKeyword ] = useState('');
+  const [historyList, setHistoryList] = useState(seachListHistory);
+  const [keyword, setKeyword] = useState('');
+  const navigate = useNavigate();
+
+  const params = useParams<{ shopId: string }>();
+  if (params.shopId) {
+    defaultRequestData.data.shopId = params.shopId;
+  }
 
   const { data } = useRequest<ResponseType>(defaultRequestData);
   const hotList = data?.data || [];
 
   function handleKeyDown(key: string) {
-    if(key === 'Enter') {
+    if (key === 'Enter' && keyword) {
+      const keywordIndex = historyList.findIndex(item => item === keyword);
       const newHistoryList = [...historyList];
+      if (keywordIndex > -1) {
+        newHistoryList.splice(keywordIndex, 1)
+      }
       newHistoryList.unshift(keyword);
-      if(newHistoryList.length > 20) {
+      if (newHistoryList.length > 20) {
         newHistoryList.length = 20;
       }
       setHistoryList(newHistoryList);
+      localStorage.setItem('search-list', JSON.stringify(newHistoryList));
+      navigate(`/searchList/${params.shopId}/${keyword}`);
       setKeyword('');
-      localStorage.setItem('search-list', JSON.stringify(newHistoryList))
     }
   }
 
   function handleHistoryListClean() {
     setHistoryList([]);
     localStorage.setItem('search-list', JSON.stringify([]))
+  }
+
+  function handleKeywordClick(keyword: string) {
+    navigate(`/searchList/${params.shopId}/${keyword}`);
   }
 
   return (
@@ -59,8 +74,8 @@ const Search = () => {
             className='search-input'
             placeholder='请输入商品名称'
             value={keyword}
-            onChange={(e) => {setKeyword(e.target.value)}}
-            onKeyDown={(e) => { handleKeyDown(e.key)}}
+            onChange={(e) => { setKeyword(e.target.value) }}
+            onKeyDown={(e) => { handleKeyDown(e.key) }}
           />
         </div>
       </div>
@@ -77,12 +92,18 @@ const Search = () => {
             <ul className='list'>
               {
                 historyList.map((item, index) => {
-                  return  <li className='list-item' key={item + index}>{item}</li>
+                  return (
+                    <li
+                      className='list-item'
+                      key={item + index}
+                      onClick={() => handleKeywordClick(item)}
+                    >{item}</li>
+                  )
                 })
               }
             </ul>
           </>
-        ): null
+        ) : null
       }
       {
         hotList.length ? (
@@ -93,12 +114,16 @@ const Search = () => {
             <ul className='list'>
               {
                 hotList.map(item => (
-                  <li className='list-item' key={item.id}>{item.keyword}</li>
+                  <li
+                    className='list-item'
+                    key={item.id}
+                    onClick={() => handleKeywordClick(item.keyword)}
+                  >{item.keyword}</li>
                 ))
               }
             </ul>
           </>
-        ): null
+        ) : null
       }
     </div>
   )
