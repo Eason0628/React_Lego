@@ -18,21 +18,22 @@ const defaultRequestData = {
   }
 }
 
+
 const Search = () => {
   const localSearchList = localStorage.getItem('search-list');
-  const seachListHistory: string[] = localSearchList ? JSON.parse(localSearchList) : [];
+  const seachListHistory: string[] = localSearchList ? JSON.parse(localSearchList): [];
 
-  const [historyList, setHistoryList] = useState(seachListHistory);
-  const [keyword, setKeyword] = useState('');
+  const [ historyList, setHistoryList] = useState(seachListHistory);
+  const [ keyword, setKeyword ] = useState('');
 
   const { data } = useRequest<ResponseType>(defaultRequestData);
   const hotList = data?.data || [];
 
   function handleKeyDown(key: string) {
-    if (key === 'Enter') {
+    if(key === 'Enter') {
       const newHistoryList = [...historyList];
       newHistoryList.unshift(keyword);
-      if (newHistoryList.length > 20) {
+      if(newHistoryList.length > 20) {
         newHistoryList.length = 20;
       }
       setHistoryList(newHistoryList);
@@ -58,8 +59,8 @@ const Search = () => {
             className='search-input'
             placeholder='请输入商品名称'
             value={keyword}
-            onChange={(e) => { setKeyword(e.target.value) }}
-            onKeyDown={(e) => { handleKeyDown(e.key) }}
+            onChange={(e) => {setKeyword(e.target.value)}}
+            onKeyDown={(e) => { handleKeyDown(e.key)}}
           />
         </div>
       </div>
@@ -76,12 +77,12 @@ const Search = () => {
             <ul className='list'>
               {
                 historyList.map((item, index) => {
-                  return <li className='list-item' key={item + index}>{item}</li>
+                  return  <li className='list-item' key={item + index}>{item}</li>
                 })
               }
             </ul>
           </>
-        ) : null
+        ): null
       }
       {
         hotList.length ? (
@@ -97,7 +98,7 @@ const Search = () => {
               }
             </ul>
           </>
-        ) : null
+        ): null
       }
     </div>
   )
